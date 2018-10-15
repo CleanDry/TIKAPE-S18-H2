@@ -1,0 +1,87 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    
+    <head>
+        <title>Kysymyspankki</title>
+        
+        <style>
+            h3 {margin-bottom: 0}
+        </style>
+    </head>
+    
+    <body>
+        <h2>Kysymykset</h2>
+        
+        <table>
+            <tr th:each="kurssi: ${kurssit}" th:with="kurssiNimi=${kurssi}">
+                <h3 th:text="'Kurssi: ' + ${kurssi}">kurssi</h3>
+                       
+                <table>
+                    <tr th:each="aihe: ${aiheet}" th:with="aiheNimi=${aihe}">
+                        
+                        
+                        <h4 th:if="${kurssitJaAiheet.get(kurssiNimi).contains(aiheNimi)}"
+                            th:text="'Aihe: ' + ${aihe}">aihe                            
+                        </h4>
+                        
+
+                        <ul>
+                            <li th:each="kysymys: ${kysymykset}"
+                                th:if="${kysymys.samaKurssiJaAihe(kurssiNimi, aiheNimi)}">
+                                
+                                <a th:href="@{~/kysymys/{id}(id=${kysymys.id})}" 
+                                     th:text="${kysymys.kysymysteksti}">
+                                </a>
+                                
+                                <form th:action="@{~/kysymys/poistaKysymys/{id}(id=${kysymys.id})}" method="POST">
+                                    <input type="submit" value="Poista"/>
+                                </form>
+                                
+                            </li>
+                        </ul>
+                        
+                    </tr>
+                </table>
+              
+            </tr>
+        </table>
+
+        
+      <h2>Luo uusi kysymys</h2>
+      <form method="POST" action="/uusiKysymys">
+        <table>
+            <tr>
+                <td>
+                    Kurssi:
+                </td>
+                <td>
+                    <input type="text" name="kurssi" maxlength="60"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Aihe:
+                </td>
+                <td>
+                    <input type="text" name="aihe" maxlength="60"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Kysymysteksti:
+                </td>
+                <td>
+                    <input type="text" name="kysymysteksti" maxlength="1000"/>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Luo"/></td>
+            </tr>
+        </table>
+
+        
+      </form>
+    </body>
+    
+</html>

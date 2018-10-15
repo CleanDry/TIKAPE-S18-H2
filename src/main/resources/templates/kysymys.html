@@ -1,0 +1,55 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>Kysymys</title>
+        <meta charset="utf-8" />
+    </head>
+
+    <body>
+        <h1 th:text="${kysymys.kysymysteksti}">Kysymys</h1>
+
+        <h2>Vastaukset</h2>
+  
+        <ol>
+            <li th:each="vastaus : ${vastaukset}">
+                <span th:text="${vastaus.vastausteksti} + ' (' +  ${vastaus.oikein} + ')'">Vastaus</span>
+                
+                <form th:action="@{~/kysymys/{kysymysId}/poistaVastaus/{vastausId}(kysymysId=${kysymys.id}, vastausId=${vastaus.id})}" method="POST">
+                    <input type="submit" value="Poista"/>
+                </form>
+            </li>
+        </ol>
+        
+        <h2>Luo uusi vastaus</h2>
+        <form method="POST" th:action="@{~/kysymys/{id}/uusiVastaus(id=${kysymys.id})}">
+            <table>
+                <tr>
+                    <td>
+                      Vastaus:
+                    </td>
+                    <td>
+                        <input type="text" name="vastausteksti" maxlength="1000"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                      Onko oikein (true/false):
+                    </td>
+                    <td>
+                        <input type="text" name="oikein"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Luo"/></td>
+                </tr>
+             </table>
+        </form>
+        
+        <br/>
+        <a href="/">Takaisin listaukseen</a>
+
+    </body>
+</html>
+
