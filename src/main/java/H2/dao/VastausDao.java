@@ -84,10 +84,11 @@ public class VastausDao implements Dao<Vastaus, Integer> {
                 
                 stmt.executeUpdate();
             } else {
-                PreparedStatement stmt = conn.prepareStatement("INSERT INTO Vastaus (kysymysId, vastausteksti, oikein) VALUES (?,?,?);");
-                stmt.setInt(1, object.getKysymysId());
-                stmt.setString(2, object.getVastausteksti());
-                stmt.setBoolean(3, object.isOikein());
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO Vastaus (vastausId, kysymysId, vastausteksti, oikein) VALUES (?,?,?,?);");
+                stmt.setInt(1, object.getId());
+                stmt.setInt(2, object.getKysymysId());
+                stmt.setString(3, object.getVastausteksti());
+                stmt.setBoolean(4, object.isOikein());
                 
                 stmt.executeUpdate();
             }

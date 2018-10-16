@@ -5,8 +5,8 @@ import H2.dao.VastausDao;
 import H2.database.Database;
 import H2.domain.Kysymys;
 import H2.domain.Vastaus;
-import static H2.util.Utilities.poistaKysymysListalta;
-import static H2.util.Utilities.poistaVastausListalta;
+import static H2.util.Utilities.etsiPoistettavatKysymykset;
+import static H2.util.Utilities.etsiPoistettavatVastaukset;
 import static H2.util.Utilities.siistitty;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +46,13 @@ public class Kysymyspankki {
             String aihe = siistitty(req.queryParams("aihe"));
             String kysymysteksti = siistitty(req.queryParams("kysymysteksti"));
             
-            Kysymys kysymys = new Kysymys(kysymykset.size() +1, kurssi, aihe, kysymysteksti);
+            Kysymys kysymys;
+            if (kysymykset.isEmpty()) {
+                kysymys = new Kysymys((kysymykset.size() +1), kurssi, aihe, kysymysteksti);
+            } else {
+                kysymys = new Kysymys((kysymykset.get(kysymykset.size() -1).getId() +1), kurssi, aihe, kysymysteksti);
+            }
+            
             System.out.println(kysymys);
             
             if (!kysymykset.contains(kysymys)) {
@@ -92,13 +98,13 @@ public class Kysymyspankki {
                 // poistetaan kysymykseen liittyvät vastaukset
                 System.out.println("Poistetaan vastaus: " + vastaus);
                 vastausDao.delete(vastaus.getId());
-                poistaVastausListalta(vastaus.getId(), vastaukset);
+                vastaukset.removeAll(etsiPoistettavatVastaukset(vastaus.getId(), vastaukset));
             }
             
             // poistetaan varsinainen kysymys
             System.out.println("Poistetaan kysymys: " + kysymys);
             kysymysDao.delete(kysymysId);
-            poistaKysymysListalta(kysymysId, kysymykset);
+            kysymykset.removeAll(etsiPoistettavatKysymykset(kysymysId, kysymykset));
             
             res.redirect("/");
             return "";
@@ -117,7 +123,13 @@ public class Kysymyspankki {
             boolean oikein = Boolean.parseBoolean(siistitty(req.queryParams("oikein")));
             
             // luodaan vastausolio
-            Vastaus vastaus = new Vastaus(vastaukset.size() +1, kysymysId, vastausteksti, oikein);
+            Vastaus vastaus;
+            if (vastaukset.isEmpty()) {
+                vastaus = new Vastaus(vastaukset.size() +1, kysymysId, vastausteksti, oikein);
+            } else {
+                vastaus =  new Vastaus(vastaukset.get(vastaukset.size() -1).getId() +1, kysymysId, vastausteksti, oikein);
+            }
+            
             System.out.println("uusiVastaus: Vastaus: " + vastaus);
             
             // vertaillaan vastauksen olemassaoloa vastaukset-listaan
@@ -151,7 +163,7 @@ public class Kysymyspankki {
             
             System.out.println("Poistetaan vastaus: " + vastaus);
             vastausDao.delete(id);
-            poistaVastausListalta(id, vastaukset);
+            vastaukset.removeAll(etsiPoistettavatVastaukset(id, vastaukset));
             
             res.redirect("/kysymys/" + kysymysId);
             return "";

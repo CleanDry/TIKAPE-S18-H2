@@ -19,23 +19,23 @@ public class Utilities {
         return syote;
     }
     
-    public static void poistaVastausListalta(int id, List<Vastaus> vastaukset) {
+    public static List<Vastaus> etsiPoistettavatVastaukset(int id, List<Vastaus> vastaukset) {
         List<Vastaus> poistettavat = new ArrayList<>();
         for (Vastaus vastaus : vastaukset) {
             if (vastaus.getId() == id) {
                 poistettavat.add(vastaus);
             }
         }
-        vastaukset.removeAll(poistettavat);
+        return poistettavat;
     }
     
-    public static void poistaKysymysListalta(int id, List<Kysymys> kysymykset) {
+    public static List<Kysymys> etsiPoistettavatKysymykset(int id, List<Kysymys> kysymykset) {
         List<Kysymys> poistettavat = new ArrayList<>();
         for (Kysymys kysymys : kysymykset) {
             if (kysymys.getId() == id) {
                 poistettavat.add(kysymys);
             }
         }
-        kysymykset.removeAll(poistettavat);
+        return poistettavat;
     }
 }
